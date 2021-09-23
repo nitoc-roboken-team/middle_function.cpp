@@ -25,18 +25,19 @@ public:
     void Descent();     //下降
     void Deployment();  //展開
     void Shrink();      //縮小
+    int power1,power2;
 };
 
 middle_function::middle_function(/* args */)
 {
-    servo1.Servo_cons(0x01,1);  servo1.init();
-    servo2.Servo_cons(0x02,1);  servo2.init();
-    motor1.LPMotor_cons(0x01,1);    motor1.init();
-    motor2.LPMotor_cons(0x02,1);    motor2.init();
-    switch1.Switch_cons(0x01,1);    switch1.init();
-    switch2.Switch_cons(0x02,1);    switch2.init();
-    switch3.Switch_cons(0x03,1);    switch3.init();
-    switch4.Switch_cons(0x04,1);    switch4.init();
+    servo1.Servo_cons(0x00,1);  servo1.init();
+    servo2.Servo_cons(0x00,2);  servo2.init();
+    motor1.LPMotor_cons(0x03,1);    motor1.init();
+    motor2.LPMotor_cons(0x03,2);    motor2.init();
+    switch1.Switch_cons(0x01,1);    switch1.init();//上川
+    switch2.Switch_cons(0x01,2);    switch2.init();//下側
+    switch3.Switch_cons(0x01,3);    switch3.init();
+    switch4.Switch_cons(0x01,4);    switch4.init();
     enc1.Encoder_cons(0x01,1,1);    enc1.init();
     enc2.Encoder_cons(0x02,1,1);    enc2.init();
 }
@@ -53,28 +54,52 @@ void middle_function::rise()
     while(true)
     {
         CSType_delay_ms(20);
-        if(switch1.get()==1&&switch2.get()==1)
+        if(switch1.get()==1)
         {
             motor1.set_power(0);
             motor2.set_power(0);
             break;
         }
-        if(switch1.get()==0)
-        {
-            motor1.set_power(50);
-        }
         else
         {
-            motor1.set_power(0);
+            if((enc1.pulse()-enc2.pulse())>1000)
+            {
+                motor1.set_power(30);
+                motor2.set_power(25);
+            }
+            else if((enc2.pulse()-enc1.pulse())>1000)
+            {
+                motor1.set_power(25);
+                motor2.set_power(30);
+            }
+            else
+            {
+                motor1.set_power(30);
+                motor2.set_power(30);
+            }
         }
-        if(switch2.get()==0)
-        {
-            motor2.set_power(50);
-        }
-        else
-        {
-            motor2.set_power(0);
-        }
+        // if(switch1.get()==1&&switch2.get()==1)
+        // {
+        //     motor1.set_power(0);
+        //     motor2.set_power(0);
+        //     break;
+        // }
+        // if(switch1.get()==0)
+        // {
+        //     motor1.set_power(50);
+        // }
+        // else
+        // {
+        //     motor1.set_power(0);
+        // }
+        // if(switch2.get()==0)
+        // {
+        //     motor2.set_power(50);
+        // }
+        // else
+        // {
+        //     motor2.set_power(0);
+        // }
     }
 }
 
@@ -83,28 +108,43 @@ void middle_function::Descent()
     while(true)
     {
         CSType_delay_ms(20);
-        if(switch3.get()==1&&switch4.get()==1)
-        {
-            motor1.set_power(0);
-            motor2.set_power(0);
-            break;
-        }
-        if(switch3.get()==0)
-        {
-            motor1.set_power(-50);
-        }
-        else
-        {
-            motor1.set_power(0);
-        }
-        if(switch4.get()==0)
-        {
-            motor2.set_power(-50);
-        }
-        else
-        {
-            motor2.set_power(0);
-        }
+        if((enc1.pulse()-enc2.pulse())>1000)
+            {
+                motor1.set_power(-30);
+                motor2.set_power(-25);
+            }
+            else if((enc2.pulse()-enc1.pulse())>1000)
+            {
+                motor1.set_power(-25);
+                motor2.set_power(-30);
+            }
+            else
+            {
+                motor1.set_power(-30);
+                motor2.set_power(-30);
+            }
+        // if(switch3.get()==1&&switch4.get()==1)
+        // {
+        //     motor1.set_power(0);
+        //     motor2.set_power(0);
+        //     break;
+        // }
+        // if(switch3.get()==0)
+        // {
+        //     motor1.set_power(-50);
+        // }
+        // else
+        // {
+        //     motor1.set_power(0);
+        // }
+        // if(switch4.get()==0)
+        // {
+        //     motor2.set_power(-50);
+        // }
+        // else
+        // {
+        //     motor2.set_power(0);
+        // }
     }
 }
 
